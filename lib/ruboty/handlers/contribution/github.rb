@@ -39,6 +39,7 @@ module Ruboty
       class DuplicateError < StandardError
       end
       class Github < Ruboty::Actions::Base
+        include Ruboty::Handlers::Contribution::GithubEnv
 
         NAMESPACE = "contribution_github"
 
@@ -57,18 +58,6 @@ module Ruboty
 
         def client
           @client ||= Octokit::Client.new(access_token: access_token)
-        end
-
-        def access_token
-          ENV["GITHUB_ACCESS_TOKEN"]
-        end
-
-        def statistics_repository
-          ENV["GITHUB_STATISTICS_REPOSITORY"]
-        end
-
-        def statistics_directory
-          ENV["GITHUB_STATISTICS_DIRECTORY"]
         end
 
         def register(repo, type, number)
