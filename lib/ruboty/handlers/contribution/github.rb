@@ -21,10 +21,18 @@ module Ruboty
 
         def pull_request(message)
           Ruboty::Actions::Contribution::Github.new(message).call
+        rescue => ex
+          message.reply("#{ex.class}: #{ex.message}")
+          puts "#{ex.class}: #{ex.message}"
+          puts ex.backtrace
         end
 
         def issue(message)
           Ruboty::Actions::Contribution::Github.new(message).call
+        rescue => ex
+          message.reply("#{ex.class}: #{ex.message}")
+          puts "#{ex.class}: #{ex.message}"
+          puts ex.backtrace
         end
       end
     end
