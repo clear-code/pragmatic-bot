@@ -120,7 +120,7 @@ module Ruboty
         end
 
         def update_statistics(date:, user:, upstream:, type:, url:)
-          line = [date, user, upstream, type, url, "\n"].join(",")
+          line = [date, user, upstream, type, url].join(",") + "\n"
           date = Date.parse(date)
           path = File.join(statistics_directory, "#{date.strftime('%Y-%m')}.csv")
           begin
