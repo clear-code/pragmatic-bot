@@ -1,4 +1,5 @@
 require "csv"
+require "octokit"
 require "ruboty/handlers/contribution/github-env"
 
 module Ruboty
