@@ -59,7 +59,7 @@ module Ruboty
           end
           ranking = Hash.new {|h, k| h[k] = 0 }
           CSV.parse(content).each do |row|
-            ranking[row[1]] += 1 if (start..last).include?(Date.parse(raw[0]))
+            ranking[row[1]] += 1 if (start..last).include?(Date.parse(row[0]))
           end
           list = format_ranking(ranking)
           message.reply("ranking #{message[:range]}\n\n#{list}")
