@@ -20,7 +20,7 @@ module Ruboty
         on(/\branking\z/, name: :ranking, description: "Ranking for all data")
         on(/\branking (?<range>\d{4}-\d{2}-\d{2}\:\d{4}-\d{2}-\d{2})/,
            name: :ranking_by_range,
-           description: "Ranking by range")
+           description: "Ranking by range. ex: 2017-04-01:2017-04-30")
 
         def stats(message)
           message.reply("stats: #{content.lines.size}")
