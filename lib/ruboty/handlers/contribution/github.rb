@@ -132,13 +132,13 @@ module Ruboty
             end
             client.update_contents(statistics_repository,
                                    path,
-                                   "Add contribution!!",
+                                   "Add feedback!!",
                                    sha,
                                    content + line)
           rescue Octokit::NotFound
             client.create_content(statistics_repository,
                                   path,
-                                  "Add contribution!!",
+                                  "Add feedback!!",
                                   line)
           end
         end
