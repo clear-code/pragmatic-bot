@@ -20,7 +20,7 @@ module Ruboty
            description: "Register contribution to the project on GitHub.com")
 
         def pull_request(message)
-          Ruboty::Actions::Contribution::Github.new(message).call
+          build_action(message).call
         rescue => ex
           message.reply("#{ex.class}: #{ex.message}")
           puts "#{ex.class}: #{ex.message}"
@@ -28,11 +28,20 @@ module Ruboty
         end
 
         def issue(message)
-          Ruboty::Actions::Contribution::Github.new(message).call
+          build_action(message).call
         rescue => ex
           message.reply("#{ex.class}: #{ex.message}")
           puts "#{ex.class}: #{ex.message}"
           puts ex.backtrace
+        end
+
+        private
+
+        def build_action(message)
+          Ruboty::Actions::Contribution::Github.new(message,
+                                                    access_token,
+                                                    statistics_repository,
+                                                    statistics_directory)
         end
       end
     end
@@ -47,9 +56,17 @@ module Ruboty
       class DuplicateError < StandardError
       end
       class Github < Ruboty::Actions::Base
-        include Ruboty::Handlers::Contribution::GithubEnv
 
         NAMESPACE = "contribution_github"
+
+        attr_reader :access_token, :statistics_repository, :statistics_directory
+
+        def initialize(message, access_token, statistics_repository, statistics_directory)
+          super(message)
+          @access_token = access_token
+          @statistics_repository = statistics_repository
+          @statistics_directory = statistics_directory
+        end
 
         def call
           if %r{\Ahttps://github\.com/(?<repo>.+?/.+?)/(?<type>(?:issues|pull))/(?<number>\d+)\z} =~ message[:url]
