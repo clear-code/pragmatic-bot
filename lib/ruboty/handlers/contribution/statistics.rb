@@ -8,10 +8,6 @@ module Ruboty
       class Statistics < Base
         include Ruboty::Handlers::Contribution::GithubEnv
 
-        env :GITHUB_ACCESS_TOKEN, "GitHub.com access token"
-        env :GITHUB_STATISTICS_REPOSITORY, "Statistics repository name on GitHub.com"
-        env :GITHUB_STATISTICS_DIRECTORY, "Statistics under this directory"
-
         on(/\bstats\z/, name: :stats, description: "Statistics for all users")
         on(/\bstats (?<user>\w+)\z/, name: :stats_by_user, description: "Statistics for user")
         on(/\bstats (?<range>\d{4}-\d{2}-\d{2}\:\d{4}-\d{2}-\d{2})/,

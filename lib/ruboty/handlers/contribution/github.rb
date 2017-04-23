@@ -7,10 +7,6 @@ module Ruboty
       class Github < Base
         include Ruboty::Handlers::Contribution::GithubEnv
 
-        env :GITHUB_ACCESS_TOKEN, "GitHub.com access token"
-        env :GITHUB_STATISTICS_REPOSITORY, "Statistics repository name on GitHub.com"
-        env :GITHUB_STATISTICS_DIRECTORY, "Statistics under this directory"
-
         on(%r{(?<url>https://github\.com/.+?/.+?/pull/\d+)},
            name: :pull_request,
            description: "Register contribution to the project on GitHub.com")
