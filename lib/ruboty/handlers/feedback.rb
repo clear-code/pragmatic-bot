@@ -1,9 +1,9 @@
 module Ruboty
   module Handlers
-    module Contribution
+    module Feedback
     end
   end
 end
 
-require "ruboty/handlers/contribution/github"
-require "ruboty/handlers/contribution/statistics"
+require "ruboty/handlers/feedback/github"
+require "ruboty/handlers/feedback/statistics"

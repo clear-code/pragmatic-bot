@@ -1,19 +1,19 @@
 require "csv"
-require "ruboty/handlers/contribution/github-env"
+require "ruboty/handlers/feedback/github-env"
 
 module Ruboty
   module Handlers
-    module Contribution
+    module Feedback
       class Github < Base
-        include Ruboty::Handlers::Contribution::GithubEnv
+        include Ruboty::Handlers::Feedback::GithubEnv
 
         on(%r{(?<url>https://github\.com/.+?/.+?/pull/\d+)},
            name: :pull_request,
-           description: "Register contribution to the project on GitHub.com")
+           description: "Register feedback to the project on GitHub.com")
 
         on(%r{(?<url>https://github.com/.+?/.+?/issues/\d+)},
            name: :issue,
-           description: "Register contribution to the project on GitHub.com")
+           description: "Register feedback to the project on GitHub.com")
 
         def pull_request(message)
           build_action(message).call
@@ -34,7 +34,7 @@ module Ruboty
         private
 
         def build_action(message)
-          Ruboty::Actions::Contribution::Github.new(message,
+          Ruboty::Actions::Feedback::Github.new(message,
                                                     access_token,
                                                     statistics_repository,
                                                     statistics_directory)
@@ -48,12 +48,12 @@ require "octokit"
 
 module Ruboty
   module Actions
-    module Contribution
+    module Feedback
       class DuplicateError < StandardError
       end
       class Github < Ruboty::Actions::Base
 
-        NAMESPACE = "contribution_github"
+        NAMESPACE = "feedback_github"
 
         attr_reader :access_token, :statistics_repository, :statistics_directory
 
@@ -71,7 +71,7 @@ module Ruboty
           else
             message.reply("Could not register: #{message[:url]}")
           end
-        rescue Ruboty::Actions::Contribution::DuplicateError
+        rescue Ruboty::Actions::Feedback::DuplicateError
           message.reply("Duplicate: #{message[:url]}")
         end
 

@@ -1,6 +1,6 @@
 module Ruboty
   module Handlers
-    module Contribution
+    module Feedback
       module GithubEnv
         def self.included(base)
           base.class_eval do
