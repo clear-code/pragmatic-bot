@@ -1,12 +1,12 @@
 require "csv"
 require "octokit"
-require "ruboty/handlers/feedback/github-env"
+require "ruboty/handlers/github-env"
 
 module Ruboty
   module Handlers
     module Feedback
       class Statistics < Base
-        include Ruboty::Handlers::Feedback::GithubEnv
+        include Ruboty::Handlers::GithubEnv
 
         on(/\bstats\z/, name: :stats, description: "Statistics for all users")
         on(/\bstats (?<user>\w+)\z/, name: :stats_by_user, description: "Statistics for user")

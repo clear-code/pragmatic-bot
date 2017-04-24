@@ -1,10 +1,10 @@
-require "ruboty/handlers/feedback/github-env"
+require "ruboty/handlers/github-env"
 require "octokit"
 
 module Ruboty
   module Handlers
     class Blog < Ruboty::Handlers::Base
-      include Ruboty::Handlers::Feedback::GithubEnv
+      include Ruboty::Handlers::GithubEnv
 
       on(%r!(?<url>https?://www\.clear-code\.com/blog/(?<date>.*)\.html)!,
          name: :register,

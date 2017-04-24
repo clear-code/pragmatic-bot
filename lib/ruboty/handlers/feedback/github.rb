@@ -1,12 +1,12 @@
 require "csv"
-require "ruboty/handlers/feedback/github-env"
+require "ruboty/handlers/github-env"
 require "ruboty/actions/github"
 
 module Ruboty
   module Handlers
     module Feedback
       class Github < Base
-        include Ruboty::Handlers::Feedback::GithubEnv
+        include Ruboty::Handlers::GithubEnv
 
         on(%r{(?<url>https://github\.com/.+?/.+?/pull/\d+)},
            name: :pull_request,

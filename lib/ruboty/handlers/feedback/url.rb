@@ -1,10 +1,11 @@
 require "octokit"
+require "ruboty/handlers/github-env"
 
 module Ruboty
   module Handlers
     module Feedback
       class URL < Ruboty::Handlers::Base
-        include Ruboty::Handlers::Feedback::GithubEnv
+        include Ruboty::Handlers::GithubEnv
 
         on(%r!(?<type>report|patch) (?<upstream>\S+?) (?<url>#{URI.regexp})!,
            name: :register,
