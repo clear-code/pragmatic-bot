@@ -2,7 +2,6 @@ require "yaml"
 
 module Ruboty
   module Handlers
-    module Feedback
       module GithubEnv
         def self.included(base)
           base.class_eval do
@@ -39,6 +38,5 @@ module Ruboty
           @users[email]
         end
       end
-    end
   end
 end
