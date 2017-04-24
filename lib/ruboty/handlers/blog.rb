@@ -1,4 +1,5 @@
 require "ruboty/handlers/github-env"
+require "ruboty/actions/github-statistics"
 require "octokit"
 
 module Ruboty
@@ -33,46 +34,23 @@ module Ruboty
       end
 
       def stats(message)
-        message.reply("blog: #{content.lines.size}")
+        action(message).stats
       end
 
       def stats_by_user(message)
-        lines = CSV.parse(content).select do |row|
-          row[1] == message[:user]
-        end
-        message.reply("blog user: #{message[:user]} #{lines.size}")
+        action(message).stats_by_user
       end
 
       def stats_by_range(message)
-        start, last = message[:range].split(":")
-        start = Date.parse(start)
-        last = Date.parse(last)
-        lines = CSV.parse(content).select do |row|
-          date = Date.parse(row[0])
-          (start..last).include?(date)
-        end
-        message.reply("blog range: #{message[:range]} #{lines.size}")
+        action(message).stats_by_range
       end
 
       def ranking(message)
-        ranking = Hash.new {|h, k| h[k] = 0 }
-        CSV.parse(content).each do |row|
-          ranking[row[1]] += 1
-        end
-        list = format_ranking(ranking)
-        message.reply("blog ranking:\n\n#{list}")
+        action(message).ranking
       end
 
       def ranking_by_range(message)
-        start, last = message[:range].split(":").map do |date|
-          Date.parse(date)
-        end
-        ranking = Hash.new {|h, k| h[k] = 0 }
-        CSV.parse(content).each do |row|
-          ranking[row[1]] += 1 if (start..last).include?(Date.parse(row[0]))
-        end
-        list = format_ranking(ranking)
-        message.reply("blog ranking #{message[:range]}\n\n#{list}")
+        action(message).ranking_by_range
       end
 
       private
@@ -103,15 +81,14 @@ module Ruboty
         end
       end
 
-      def content
-        response = client.contents(statistics_repository, path: blog_directory)
-        csv_files = response.map(&:path).select do |path|
-          File.extname(path) == ".csv"
-        end
-        csv_files.map do |csv_file|
-          response = client.contents(statistics_repository, path: csv_file)
-          Base64.decode64(response.content)
-        end.join
+      def action(message)
+        Ruboty::Actions::GithubStatistics.new(
+          message,
+          access_token,
+          statistics_repository,
+          blog_directory,
+          "blog"
+        )
       end
     end
   end
