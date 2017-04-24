@@ -18,6 +18,7 @@ module Ruboty
           date = Date.today
           line = "#{date.iso8601},#{github_user},#{upstream},#{type},#{url}\n"
           update_feedback(date, line)
+          message.reply("Registered: #{url}")
         rescue => ex
           message.reply("#{ex.class}: #{ex.message}")
           puts "#{ex.class}: #{ex.message}"
