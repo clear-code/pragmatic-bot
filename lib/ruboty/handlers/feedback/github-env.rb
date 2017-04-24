@@ -1,3 +1,5 @@
+require "yaml"
+
 module Ruboty
   module Handlers
     module Feedback
@@ -8,6 +10,7 @@ module Ruboty
             env :GITHUB_STATISTICS_REPOSITORY, "Statistics repository name on GitHub.com"
             env :GITHUB_STATISTICS_DIRECTORY, "Statistics under this directory"
             env :GITHUB_STATISTICS_BLOG_DIRECTORY, "Blog statistics under this directory"
+            env :GITHUB_USERS_MAP_FILE, "Path to GitHub users and emails map in YAML format"
           end
         end
 
@@ -25,6 +28,15 @@ module Ruboty
 
         def blog_directory
           ENV["GITHUB_STATISTICS_BLOG_DIRECTORY"]
+        end
+
+        def users_map_file
+          ENV["GITHUB_USERS_MAP_FILE"]
+        end
+
+        def user_for(email)
+          @users ||= YAML.load_file(users_map_file)
+          @users[email]
         end
       end
     end
