@@ -2,9 +2,9 @@ require "octokit"
 
 module Ruboty
   module Actions
-    class DuplicateError < StandardError
-    end
     class Github < Ruboty::Actions::Base
+      class DuplicateError < StandardError
+      end
 
       NAMESPACE = "feedback_github"
 
@@ -24,7 +24,7 @@ module Ruboty
         else
           message.reply("Could not register: #{message[:url]}")
         end
-      rescue Ruboty::Actions::Feedback::DuplicateError
+      rescue Ruboty::Actions::Github::DuplicateError
         message.reply("Duplicate: #{message[:url]}")
       end
 
@@ -94,7 +94,7 @@ module Ruboty
           sha = response.sha
           content = Base64.decode64(response.content)
           if content.lines.include?(line)
-            raise DuplicateError
+            raise Ruboty::Actions::Github::DuplicateError
           end
           client.update_contents(statistics_repository,
                                  path,

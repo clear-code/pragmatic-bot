@@ -1,5 +1,6 @@
 require "csv"
 require "ruboty/handlers/feedback/github-env"
+require "ruboty/actions/github"
 
 module Ruboty
   module Handlers
@@ -34,10 +35,10 @@ module Ruboty
         private
 
         def build_action(message)
-          Ruboty::Actions::Feedback::Github.new(message,
-                                                    access_token,
-                                                    statistics_repository,
-                                                    statistics_directory)
+          Ruboty::Actions::Github.new(message,
+                                      access_token,
+                                      statistics_repository,
+                                      statistics_directory)
         end
       end
     end
