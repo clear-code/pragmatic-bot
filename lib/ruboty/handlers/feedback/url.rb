@@ -7,7 +7,7 @@ module Ruboty
       class URL < Ruboty::Handlers::Base
         include Ruboty::Handlers::GithubEnv
 
-        on(%r!(?<url>#{URI.regexp}) +(?<type>report|patch|help) +(?<upstream>\S+)!,
+        on(%r!(?<url>#{URI.regexp}) +(?<type>report|patch|help|find) +(?<upstream>\S+)!,
            name: :register,
            description: "Register URL as a feedback")
 
