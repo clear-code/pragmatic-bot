@@ -8,11 +8,11 @@ module Ruboty
       class Github < Base
         include Ruboty::Handlers::GithubEnv
 
-        on(%r{(?<url>https://github\.com/.+?/.+?/pull/\d+)},
+        on(%r{(?<url>https://github\.com/.+?/.+?/pull/\d+)\z},
            name: :pull_request,
            description: "Register feedback to the project on GitHub.com")
 
-        on(%r{(?<url>https://github.com/.+?/.+?/issues/\d+)},
+        on(%r{(?<url>https://github.com/.+?/.+?/issues/\d+)\z},
            name: :issue,
            description: "Register feedback to the project on GitHub.com")
 
