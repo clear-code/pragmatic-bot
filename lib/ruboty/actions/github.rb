@@ -96,11 +96,12 @@ module Ruboty
           if content.lines.include?(line)
             raise Ruboty::Actions::Github::DuplicateError
           end
+          new_content = (content.lines + [line]).sort.join
           client.update_contents(statistics_repository,
                                  path,
                                  "Add feedback!!",
                                  sha,
-                                 content + line)
+                                 new_content)
         rescue Octokit::NotFound
           client.create_content(statistics_repository,
                                 path,
