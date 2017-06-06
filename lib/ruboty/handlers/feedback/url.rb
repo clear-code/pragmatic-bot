@@ -12,14 +12,7 @@ module Ruboty
            description: "Register URL as a feedback")
 
         def register(message)
-          github_user = user_for(message.from)
-          type = message[:type]
-          upstream = message[:upstream]
-          url = message[:url]
-          date = Date.today
-          line = "#{date.iso8601},#{github_user},#{upstream},#{type},#{url}\n"
-          update_feedback(date, line)
-          message.reply("Registered: #{url}")
+          build_action(message).call
         rescue => ex
           message.reply("#{ex.class}: #{ex.message}")
           puts "#{ex.class}: #{ex.message}"
@@ -28,30 +21,11 @@ module Ruboty
 
         private
 
-        def client
-          @client ||= Octokit::Client.new(access_token: access_token)
-        end
-
-        def update_feedback(date, line)
-          path = File.join(statistics_directory, "#{date.strftime('%Y-%m')}.csv")
-          begin
-            response = client.contents(statistics_repository, path: path)
-            sha = response.sha
-            content = Base64.decode64(response.content)
-            if content.lines.include?(line)
-              raise "Duplicated entry #{line}"
-            end
-            client.update_contents(statistics_repository,
-                                   path,
-                                   "Add feedback!!",
-                                   sha,
-                                   content + line)
-          rescue Octokit::NotFound
-            client.create_content(statistics_repository,
-                                  path,
-                                  "Add feedback!!",
-                                  line)
-          end
+        def build_action(message)
+          Ruboty::Actions::Github.new(message,
+                                      access_token,
+                                      statistics_repository,
+                                      statistics_directory)
         end
       end
     end

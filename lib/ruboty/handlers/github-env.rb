@@ -5,6 +5,7 @@ module Ruboty
     module GithubEnv
       def self.included(base)
         base.class_eval do
+          break unless method_defined?(:env)
           env :GITHUB_ACCESS_TOKEN, "GitHub.com access token"
           env :GITHUB_STATISTICS_REPOSITORY, "Statistics repository name on GitHub.com"
           env :GITHUB_STATISTICS_DIRECTORY, "Statistics under this directory"

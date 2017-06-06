@@ -1,10 +1,13 @@
 require "octokit"
+require "ruboty/handlers/github-env"
 
 module Ruboty
   module Actions
     class Github < Ruboty::Actions::Base
       class DuplicateError < StandardError
       end
+
+      include Ruboty::Handlers::GithubEnv
 
       NAMESPACE = "feedback_github"
 
@@ -19,11 +22,11 @@ module Ruboty
 
       def call
         if %r{\Ahttps://github\.com/(?<repo>.+?/.+?)/(?<type>(?:issues|pull))/(?<number>\d+)\z} =~ message[:url]
-          register(repo, type, number)
-          message.reply("Registered: #{message[:url]}")
+          register(type: type, repo: repo, number: number)
         else
-          message.reply("Could not register: #{message[:url]}")
+          register(type: message[:type])
         end
+        message.reply("Registered: #{message[:url]}")
       rescue Ruboty::Actions::Github::DuplicateError
         message.reply("Duplicate: #{message[:url]}")
       end
@@ -34,12 +37,14 @@ module Ruboty
         @client ||= Octokit::Client.new(access_token: access_token)
       end
 
-      def register(repo, type, number)
+      def register(type:, repo: nil, number: nil)
         case type
         when "pull"
           register_pull_request(repo, number)
         when "issues"
           register_issue(repo, number)
+        else
+          register_url
         end
       end
 
@@ -53,11 +58,14 @@ module Ruboty
           type: :patch,
           url: pull.html_url
         }
-        update_statistics(date: date,
-                          user: pull.user.login,
-                          upstream: pull.base.repo.full_name,
-                          type: :patch,
-                          url: pull.html_url)
+        line = [
+          date,
+          pull.user.login,
+          pull.base.repo.full_name,
+          :patch,
+          pull.html_url
+        ].join(",") + "\n"
+        update_statistics(pull.created_at.localtime, line)
       end
 
       def register_issue(repo, number)
@@ -70,11 +78,31 @@ module Ruboty
           type: :report,
           url: issue.html_url
         }
-        update_statistics(date: date,
-                          user: issue.user.login,
-                          upstream: repo,
-                          type: :report,
-                          url: issue.html_url)
+        line = [
+          date,
+          issue.user.login,
+          repo,
+          :report,
+          issue.html_url
+        ].join(",") + "\n"
+        update_statistics(issue.created_at.localtime, line)
+      end
+
+      def register_url
+        github_user = user_for(message.from)
+        type = message[:type]
+        upstream = message[:upstream]
+        url = message[:url]
+        date = Date.today
+        records[date] ||= []
+        records[date] << {
+          user: github_user,
+          upstream: upstream,
+          type: type,
+          url: url
+        }
+        line = "#{date.iso8601},#{github_user},#{upstream},#{type},#{url}\n"
+        update_statistics(date, line)
       end
 
       def robot
@@ -85,9 +113,7 @@ module Ruboty
         robot.brain.data[NAMESPACE] ||= {}
       end
 
-      def update_statistics(date:, user:, upstream:, type:, url:)
-        line = [date, user, upstream, type, url].join(",") + "\n"
-        date = Date.parse(date)
+      def update_statistics(date, line)
         path = File.join(statistics_directory, "#{date.strftime('%Y-%m')}.csv")
         begin
           response = client.contents(statistics_repository, path: path)
