@@ -16,7 +16,9 @@ module Ruboty
       end
 
       def stats
-        message.reply("#{label}: #{content.lines.size}")
+        data = content
+        lines = format_stats(CSV.parse(data))
+        message.reply("#{lines.join("\n")}\ntotal: #{data.lines.size}")
       end
 
       def stats_by_user
@@ -30,11 +32,12 @@ module Ruboty
         start, last = message[:range].split(":")
         start = Date.parse(start)
         last = Date.parse(last)
-        lines = CSV.parse(content).select do |row|
+        rows = CSV.parse(content).select do |row|
           date = Date.parse(row[0])
           (start..last).include?(date)
         end
-        message.reply("#{label} range: #{message[:range]} #{lines.size}")
+        lines = format_stats(rows)
+        message.reply("#{label} range: #{message[:range]}\n#{lines.join("\n")}\ntotal: #{rows.size}")
       end
 
       def ranking
@@ -73,6 +76,16 @@ module Ruboty
           response = client.contents(repository, path: csv_file)
           Base64.decode64(response.content)
         end.join
+      end
+
+      def format_stats(rows)
+        groups = rows.group_by do |row|
+          row[3]
+        end
+        lines = groups.map do |type, _rows|
+          "#{type}: #{_rows.size}"
+        end
+        lines.sort
       end
 
       def format_ranking(ranking)

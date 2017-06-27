@@ -1,0 +1,15 @@
+2017-06-01,ashie,mozilla,patch,https://bugzilla.mozilla.org/show_bug.cgi?id=1306529#c16
+2017-06-01,ashie,mozilla,report,https://bugzilla.mozilla.org/show_bug.cgi?id=1369292
+2017-06-01,cosmo0920,fluent/fluentd-ui,patch,https://github.com/fluent/fluentd-ui/pull/213
+2017-06-01,kou,apache/arrow,patch,https://github.com/apache/arrow/pull/722
+2017-06-01,kou,okkez/ruby-zulip-client,find,https://github.com/okkez/ruby-zulip-client/pull/1
+2017-06-01,okkez,fluent/fluentd-ui,find,https://github.com/fluent/fluentd-ui/pull/213
+2017-06-01,okkez,fluent/fluentd-website,patch,https://github.com/fluent/fluentd-website/pull/35
+2017-06-01,okkez,nulab/fluent-plugin-typetalk,info,https://github.com/nulab/fluent-plugin-typetalk/pull/6#pullrequestreview-41413836
+2017-06-01,okkez,nulab/fluent-plugin-typetalk,info,https://github.com/nulab/fluent-plugin-typetalk/pull/6#pullrequestreview-41449484
+2017-06-01,okkez,sunny4381/fluent-plugin-zabbix-simple,info,https://github.com/sunny4381/fluent-plugin-zabbix-simple/issues/2#issuecomment-305382434
+2017-06-02,cosmo0920,bitex-la/fluent-plugin-msgpack-parser,report,https://github.com/bitex-la/fluent-plugin-msgpack-parser/issues/1
+2017-06-02,cosmo0920,core-printing,info,https://bugzilla.mozilla.org/show_bug.cgi?id=1366744#c11
+2017-06-02,kou,homebrew/homebrew-core,help,https://github.com/Homebrew/homebrew-core/pull/14105
+2017-06-02,kou,okkez/pragmatic-bot,report,https://github.com/okkez/pragmatic-bot/issues/5
+2017-06-03,okkez,fluent/fluentd-docs,patch,https://github.com/fluent/fluentd-docs/pull/271

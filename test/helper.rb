@@ -10,3 +10,7 @@ require "test-unit"
 require "test-unit-notify"
 require "test/unit/rr"
 require "ruboty"
+
+def fixture_path(path)
+  Pathname(__dir__) + "fixtures" + path
+end
