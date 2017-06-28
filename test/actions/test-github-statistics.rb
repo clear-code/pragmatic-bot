@@ -19,6 +19,42 @@ class TestGithubStatistics < Test::Unit::TestCase
     action.stats
   end
 
+  def test_stats_by_user
+    message = {
+      user: "kou"
+    }
+    mock(message).reply(<<~MESSAGE.chomp)
+      feedback user: kou
+      find: 1
+      help: 1
+      patch: 1
+      report: 1
+      total: 4
+    MESSAGE
+    action = create_action(message)
+    mock(action).content { fixture_path("feedback.csv").read }
+    action.stats_by_user
+  end
+
+  def test_stats_by_user_with_range
+    message = {
+      user: "kou",
+      range: "2017-06-01:2017-06-02"
+    }
+    mock(message).reply(<<~MESSAGE.chomp)
+      feedback user: kou
+      range: 2017-06-01:2017-06-02
+      find: 1
+      help: 1
+      patch: 1
+      report: 1
+      total: 4
+    MESSAGE
+    action = create_action(message)
+    mock(action).content { fixture_path("feedback.csv").read }
+    action.stats_by_user
+  end
+
   def test_stats_by_range
     message = {
       user: "okkez",

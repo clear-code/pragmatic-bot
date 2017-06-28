@@ -22,10 +22,21 @@ module Ruboty
       end
 
       def stats_by_user
-        lines = CSV.parse(content).select do |row|
-          row[1] == message[:user]
+        start, last = message[:range].split(":").map {|d| Date.parse(d) } if message[:range]
+
+        rows = CSV.parse(content).select do |row|
+          if message[:range]
+            row[1] == message[:user] && (start..last).include?(Date.parse(row[0]))
+          else
+            row[1] == message[:user]
+          end
         end
-        message.reply("#{label} user: #{message[:user]} #{lines.size}")
+        lines = format_stats(rows)
+        if message[:range]
+          message.reply("#{label} user: #{message[:user]}\nrange: #{message[:range]}\n#{lines.join("\n")}\ntotal: #{rows.size}")
+        else
+          message.reply("#{label} user: #{message[:user]}\n#{lines.join("\n")}\ntotal: #{rows.size}")
+        end
       end
 
       def stats_by_range

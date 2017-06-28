@@ -10,7 +10,7 @@ module Ruboty
         include Ruboty::Handlers::GithubEnv
 
         on(/\bstats\z/, name: :stats, description: "Statistics for all users")
-        on(/\bstats (?<user>\w+)\z/, name: :stats_by_user, description: "Statistics for user")
+        on(/\bstats (?<user>\w+)\s*(?<range>\d{4}-\d{2}-\d{2}\:\d{4}-\d{2}-\d{2})?\z/, name: :stats_by_user, description: "Statistics for user")
         on(/\bstats (?<range>\d{4}-\d{2}-\d{2}\:\d{4}-\d{2}-\d{2})/,
            name: :stats_by_range,
            description: "Statistics for range. ex: 2017-04-01:2017-04-30")
