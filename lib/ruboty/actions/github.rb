@@ -21,7 +21,7 @@ module Ruboty
       end
 
       def call
-        if %r{\Ahttps://github\.com/(?<repo>.+?/.+?)/(?<type>(?:issues|pull))/(?<number>\d+)\z} =~ message[:url]
+        if %r{\Ahttps://github\.com/(?<repo>.+?/.+?)/(?<type>(?:issues|pull))/(?<number>\d+)\z} =~ message[:url] && message[:type].nil?
           register(type: type, repo: repo, number: number)
         else
           register(type: message[:type])
