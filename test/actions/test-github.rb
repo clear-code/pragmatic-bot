@@ -7,6 +7,8 @@ class TestGithub < Test::Unit::TestCase
     message = {
       url: "https://github.com/fluent/fluentd/pull/1603"
     }
+    stub(message).[](:type).once { raise IndexError }
+    stub(message).[](:url) { "https://github.com/fluent/fluentd/pull/1603" }
     stub(message).reply(anything)
     action = create_action(message)
     mock(action).register(type: "pull", repo: "fluent/fluentd", number: "1603")
