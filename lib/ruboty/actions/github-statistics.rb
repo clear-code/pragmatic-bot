@@ -22,7 +22,11 @@ module Ruboty
       end
 
       def stats_by_user
-        start, last = message[:range].split(":").map {|d| Date.parse(d) } if message[:range]
+        begin
+          start, last = message[:range].split(":").map {|d| Date.parse(d) }
+        rescue IndexError
+          # No range
+        end
 
         rows = CSV.parse(content).select do |row|
           if message[:range]
