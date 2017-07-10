@@ -26,17 +26,18 @@ module Ruboty
           start, last = message[:range].split(":").map {|d| Date.parse(d) }
         rescue IndexError
           # No range
+          start, last = nil
         end
 
         rows = CSV.parse(content).select do |row|
-          if message[:range]
+          if start && last
             row[1] == message[:user] && (start..last).include?(Date.parse(row[0]))
           else
             row[1] == message[:user]
           end
         end
         lines = format_stats(rows)
-        if message[:range]
+        if start && last
           message.reply("#{label} user: #{message[:user]}\nrange: #{message[:range]}\n#{lines.join("\n")}\ntotal: #{rows.size}")
         else
           message.reply("#{label} user: #{message[:user]}\n#{lines.join("\n")}\ntotal: #{rows.size}")
