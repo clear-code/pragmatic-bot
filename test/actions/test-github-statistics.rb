@@ -20,9 +20,7 @@ class TestGithubStatistics < Test::Unit::TestCase
   end
 
   def test_stats_by_user
-    message = {
-      user: "kou"
-    }
+    message = /\A(?<user>\w+)\z/.match("kou")
     mock(message).reply(<<~MESSAGE.chomp)
       feedback user: kou
       find: 1
