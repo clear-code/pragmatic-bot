@@ -52,6 +52,7 @@ module Ruboty
         else
           register_url
         end
+        register_finder
       end
 
       def register_pull_request(repo, number)
@@ -109,6 +110,27 @@ module Ruboty
         }
         line = "#{date.iso8601},#{github_user},#{upstream},#{type},#{url}\n"
         update_statistics(date, line)
+      end
+
+      def register_finder
+        begin
+          github_user = message[:finder]
+          type = "find"
+          upstream = message[:upstream]
+          url = message[:url]
+          date = Date.today
+          records[date] ||= []
+          records[date] << {
+            user: github_user,
+            upstream: upstream,
+            type: type,
+            url: url
+          }
+          line = "#{date.iso8601},#{github_user},#{upstream},#{type},#{url}\n"
+          update_statistics(date, line)
+        rescue IndexError
+          # do nothing
+        end
       end
 
       def robot
