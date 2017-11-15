@@ -115,6 +115,7 @@ module Ruboty
       def register_finder
         begin
           github_user = message[:finder]
+          return if github_user.nil? || github_user.empty?
           type = "find"
           upstream = message[:upstream]
           url = message[:url]
