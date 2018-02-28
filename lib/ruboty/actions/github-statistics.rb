@@ -105,12 +105,16 @@ module Ruboty
         message.robot
       end
 
+      def namespace
+        "#{NAMESPACE}.#{@label}"
+      end
+
       def content_cache
-        robot.brain.data[NAMESPACE]
+        robot.brain.data[namespace]
       end
 
       def content_cache=(text)
-        robot.brain.data[NAMESPACE] = text
+        robot.brain.data[namespace] = text
       end
 
       def reset_content_cache_if_needed
