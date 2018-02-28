@@ -5,6 +5,8 @@ module Ruboty
   module Actions
     class GithubStatistics < Ruboty::Actions::Base
 
+      NAMESPACE = "feedback-github-statistics"
+
       attr_reader :access_token, :repository, :base_directory, :label
 
       def initialize(message, access_token, repository, base_directory, label)
@@ -87,11 +89,42 @@ module Ruboty
         response = client.contents(repository, path: base_directory)
         csv_files = response.map(&:path).select do |path|
           File.extname(path) == ".csv"
+        end.sort
+        reset_content_cache_if_needed
+        if content_cache.nil? || content_cache.empty?
+          content_cache = csv_files[0..-2].map do |csv_file|
+            response = client.contents(repository, path: csv_file)
+            Base64.decode64(response.content)
+          end.join
         end
-        csv_files.map do |csv_file|
-          response = client.contents(repository, path: csv_file)
-          Base64.decode64(response.content)
-        end.join
+        response = client.contents(repository, path: csv_files.last)
+        content_cache + Base64.decode64(response.content)
+      end
+
+      def robot
+        message.robot
+      end
+
+      def content_cache
+        robot.brain.data[NAMESPACE]
+      end
+
+      def content_cache=(text)
+        robot.brain.data[NAMESPACE] = text
+      end
+
+      def reset_content_cache_if_needed
+        return unless content_cache
+        return if content_cache.empty?
+        begin
+          last_date = content_cache.lines.last.split(",", 2).first
+          last_date = Date.parse(last_date)
+          if last_date.month < Date.today.month
+            content_cache = nil
+          end
+        rescue
+          content_cache = nil
+        end
       end
 
       def format_stats(rows)
