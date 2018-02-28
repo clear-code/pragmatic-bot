@@ -13,9 +13,11 @@ class TestGithubStatistics < Test::Unit::TestCase
       patch: 5
       report: 3
       total: 15
+      elapsed: 0.1234 + 0.1234
     MESSAGE
     action = create_action(message)
     mock(action).content { fixture_path("feedback.csv").read }
+    mock(Benchmark).realtime.yields.times(2) { 0.1234 }
     action.stats
   end
 
@@ -28,9 +30,11 @@ class TestGithubStatistics < Test::Unit::TestCase
       patch: 1
       report: 1
       total: 4
+      elapsed: 0.1234 + 0.1234
     MESSAGE
     action = create_action(message)
     mock(action).content { fixture_path("feedback.csv").read }
+    mock(Benchmark).realtime.yields.times(2) { 0.1234 }
     action.stats_by_user
   end
 
@@ -47,9 +51,11 @@ class TestGithubStatistics < Test::Unit::TestCase
       patch: 1
       report: 1
       total: 4
+      elapsed: 0.1234 + 0.1234
     MESSAGE
     action = create_action(message)
     mock(action).content { fixture_path("feedback.csv").read }
+    mock(Benchmark).realtime.yields.times(2) { 0.1234 }
     action.stats_by_user
   end
 
@@ -66,9 +72,11 @@ class TestGithubStatistics < Test::Unit::TestCase
       patch: 4
       report: 3
       total: 14
+      elapsed: 0.1234 + 0.1234
     MESSAGE
     action = create_action(message)
     mock(action).content { fixture_path("feedback.csv").read }
+    mock(Benchmark).realtime.yields.times(2) { 0.1234 }
     action.stats_by_range
   end
 

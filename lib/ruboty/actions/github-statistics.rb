@@ -1,3 +1,4 @@
+require "benchmark"
 require "csv"
 require "octokit"
 
@@ -18,9 +19,15 @@ module Ruboty
       end
 
       def stats
-        data = content
-        lines = format_stats(CSV.parse(data))
-        message.reply("#{lines.join("\n")}\ntotal: #{data.lines.size}")
+        data = nil
+        lines = nil
+        elapsed_content = measure do
+          data = content
+        end
+        elapsed_format = measure do
+          lines = format_stats(CSV.parse(data))
+        end
+        message.reply("#{lines.join("\n")}\ntotal: #{data.lines.size}\nelapsed: #{elapsed_content} + #{elapsed_format}")
       end
 
       def stats_by_user
@@ -31,18 +38,26 @@ module Ruboty
           start, last = nil
         end
 
-        rows = CSV.parse(content).select do |row|
-          if start && last
-            row[1] == message[:user] && (start..last).include?(Date.parse(row[0]))
-          else
-            row[1] == message[:user]
-          end
+        rows = nil
+        lines = nil
+        _content = nil
+        elapsed_content = measure do
+          _content = content
         end
-        lines = format_stats(rows)
+        elapsed_format = measure do
+          rows = CSV.parse(_content).select do |row|
+            if start && last
+              row[1] == message[:user] && (start..last).include?(Date.parse(row[0]))
+            else
+              row[1] == message[:user]
+            end
+          end
+          lines = format_stats(rows)
+        end
         if start && last
-          message.reply("#{label} user: #{message[:user]}\nrange: #{message[:range]}\n#{lines.join("\n")}\ntotal: #{rows.size}")
+          message.reply("#{label} user: #{message[:user]}\nrange: #{message[:range]}\n#{lines.join("\n")}\ntotal: #{rows.size}\nelapsed: #{elapsed_content} + #{elapsed_format}")
         else
-          message.reply("#{label} user: #{message[:user]}\n#{lines.join("\n")}\ntotal: #{rows.size}")
+          message.reply("#{label} user: #{message[:user]}\n#{lines.join("\n")}\ntotal: #{rows.size}\nelapsed: #{elapsed_content} + #{elapsed_format}")
         end
       end
 
@@ -50,21 +65,36 @@ module Ruboty
         start, last = message[:range].split(":")
         start = Date.parse(start)
         last = Date.parse(last)
-        rows = CSV.parse(content).select do |row|
-          date = Date.parse(row[0])
-          (start..last).include?(date)
+        _content = nil
+        elapsed_content = measure do
+          _content = content
         end
-        lines = format_stats(rows)
-        message.reply("#{label} range: #{message[:range]}\n#{lines.join("\n")}\ntotal: #{rows.size}")
+        rows = nil
+        lines = nil
+        elapsed_format = measure do
+          rows = CSV.parse(_content).select do |row|
+            date = Date.parse(row[0])
+            (start..last).include?(date)
+          end
+          lines = format_stats(rows)
+        end
+        message.reply("#{label} range: #{message[:range]}\n#{lines.join("\n")}\ntotal: #{rows.size}\nelapsed: #{elapsed_content} + #{elapsed_format}")
       end
 
       def ranking
         ranking = Hash.new {|h, k| h[k] = 0 }
-        CSV.parse(content).each do |row|
-          ranking[row[1]] += 1
+        _content = nil
+        elapsed_content = measure do
+          _content = content
         end
-        list = format_ranking(ranking)
-        message.reply("#{label} ranking:\n\n#{list}")
+        list = nil
+        elapsed_format = measure do
+          CSV.parse(_content).each do |row|
+            ranking[row[1]] += 1
+          end
+          list = format_ranking(ranking)
+        end
+        message.reply("#{label} ranking:\n\n#{list}\nelapsed: #{elapsed_content} + #{elapsed_format}")
       end
 
       def ranking_by_range
@@ -72,11 +102,18 @@ module Ruboty
           Date.parse(date)
         end
         ranking = Hash.new {|h, k| h[k] = 0 }
-        CSV.parse(content).each do |row|
-          ranking[row[1]] += 1 if (start..last).include?(Date.parse(row[0]))
+        _content = nil
+        elapsed_content = measure do
+          _content = content
         end
-        list = format_ranking(ranking)
-        message.reply("#{label} ranking #{message[:range]}\n\n#{list}")
+        list = nil
+        elapsed_format = measure do
+          CSV.parse(_content).each do |row|
+            ranking[row[1]] += 1 if (start..last).include?(Date.parse(row[0]))
+          end
+          list = format_ranking(ranking)
+        end
+        message.reply("#{label} ranking #{message[:range]}\n\n#{list}\nelapsed: #{elapsed_content} + #{elapsed_format}")
       end
 
       private
@@ -143,6 +180,13 @@ module Ruboty
 
       def format_ranking(ranking)
         ranking.to_a.sort_by {|_, n| -n }.map {|u, n| "#{u}:#{n}" }.join("\n")
+      end
+
+      def measure
+        elapsed = Benchmark.realtime do
+          yield
+        end
+        "%.4f" % [elapsed]
       end
     end
   end
