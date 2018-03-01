@@ -129,10 +129,11 @@ module Ruboty
         end.sort
         reset_content_cache_if_needed
         if content_cache.nil? || content_cache.empty?
-          content_cache = csv_files[0..-2].map do |csv_file|
+          _content_cache = csv_files[0..-2].map do |csv_file|
             response = client.contents(repository, path: csv_file)
             Base64.decode64(response.content)
           end.join
+          set_content_cache(_content_cache)
         end
         response = client.contents(repository, path: csv_files.last)
         content_cache + Base64.decode64(response.content)
@@ -150,7 +151,7 @@ module Ruboty
         robot.brain.data[namespace]
       end
 
-      def content_cache=(text)
+      def set_content_cache(text)
         robot.brain.data[namespace] = text
       end
 
