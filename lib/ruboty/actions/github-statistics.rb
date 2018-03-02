@@ -156,16 +156,16 @@ module Ruboty
       end
 
       def reset_content_cache_if_needed
-        return unless content_cache
+        return if content_cache.nil?
         return if content_cache.empty?
         begin
           last_date = content_cache.lines.last.split(",", 2).first
           last_date = Date.parse(last_date)
-          if last_date.month < Date.today.month
-            content_cache = nil
+          if last_date.month + 1 < Date.today.month
+            set_content_cache("")
           end
         rescue
-          content_cache = nil
+          set_content_cache("")
         end
       end
 
