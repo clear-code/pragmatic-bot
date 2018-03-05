@@ -10,12 +10,13 @@ module Ruboty
 
       attr_reader :access_token, :repository, :base_directory, :label
 
-      def initialize(message, access_token, repository, base_directory, label)
+      def initialize(message, access_token, repository, base_directory, label, force_reload: false)
         super(message)
         @access_token = access_token
         @repository = repository
         @base_directory = base_directory
         @label = label
+        @force_reload = force_reload
       end
 
       def stats
@@ -116,6 +117,10 @@ module Ruboty
         message.reply("#{label} ranking #{message[:range]}\n\n#{list}\nelapsed: #{elapsed_content} + #{elapsed_format}")
       end
 
+      def reload_stats
+        stats
+      end
+
       private
 
       def client
@@ -127,7 +132,11 @@ module Ruboty
         csv_files = response.map(&:path).select do |path|
           File.extname(path) == ".csv"
         end.sort
-        reset_content_cache_if_needed
+        if @force_reload
+          reset_content_cache
+        else
+          reset_content_cache_if_needed
+        end
         if content_cache.nil? || content_cache.empty?
           _content_cache = csv_files[0..-2].map do |csv_file|
             response = client.contents(repository, path: csv_file)
@@ -155,6 +164,10 @@ module Ruboty
         robot.brain.data[namespace] = text
       end
 
+      def reset_content_cache
+        set_content_cache("")
+      end
+
       def reset_content_cache_if_needed
         return if content_cache.nil?
         return if content_cache.empty?
@@ -162,10 +175,10 @@ module Ruboty
           last_date = content_cache.lines.last.split(",", 2).first
           last_date = Date.parse(last_date)
           if last_date.month + 1 < Date.today.month
-            set_content_cache("")
+            reset_content_cache
           end
         rescue
-          set_content_cache("")
+          reset_content_cache
         end
       end
 

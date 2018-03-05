@@ -19,6 +19,7 @@ module Ruboty
       on(/\bblog[-_]ranking (?<range>\d{4}-\d{2}-\d{2}\:\d{4}-\d{2}-\d{2})/,
          name: :ranking_by_range,
          description: "Ranking by range. ex: 2017-04-01:2017-04-30")
+      on(/\breload_blog\z/, name: :reload_stats, description: "Reload blog statistics")
 
       def register(message)
         github_user = user_for(message.from)
@@ -53,6 +54,10 @@ module Ruboty
         action(message).ranking_by_range
       end
 
+      def reload_stats(message)
+        action(message, force_reload: true).reload_stats
+      end
+
       private
 
       def client
@@ -81,13 +86,14 @@ module Ruboty
         end
       end
 
-      def action(message)
+      def action(message, force_reload: false)
         Ruboty::Actions::GithubStatistics.new(
           message,
           access_token,
           statistics_repository,
           blog_directory,
-          "blog"
+          "blog",
+          force_reload: force_reload
         )
       end
     end
