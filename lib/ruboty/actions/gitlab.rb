@@ -125,7 +125,7 @@ module Ruboty
 
       def initialize(endpoint)
         @endpoint = endpoint
-        @client = Gitlab.client(endpoint: endpoint)
+        @client = ::Gitlab.client(endpoint: endpoint)
       end
 
       def issue(repo, number)
