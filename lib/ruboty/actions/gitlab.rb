@@ -90,7 +90,7 @@ module Ruboty
           repo,
           :report,
           issue.web_url
-        ].join(".") + "\n"
+        ].join(",") + "\n"
         update_statistics(created_at.localtime, line)
       end
 
