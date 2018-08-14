@@ -1,6 +1,5 @@
-require "csv"
 require "ruboty/handlers/github-env"
-require "ruboty/actions/github"
+require "ruboty/actions/gitlab"
 
 module Ruboty
   module Handlers
