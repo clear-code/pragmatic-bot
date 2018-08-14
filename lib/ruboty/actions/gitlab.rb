@@ -30,6 +30,7 @@ module Ruboty
           else
             # Unknown
           end
+          message.reply("Registered: #{message[:url]}")
         rescue DuplicateError
           message.reply("Duplicate: #{message[:url]}")
         rescue UnknownType => ex
