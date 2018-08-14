@@ -55,7 +55,7 @@ module Ruboty
         @gitlab_client
       end
 
-      def register(endpoint:, repo:, type:, number:)
+      def register(repo:, type:, number:)
         case type
         when "merge_requets"
           register_merge_request(repo, number)
