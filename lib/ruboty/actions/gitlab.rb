@@ -68,7 +68,8 @@ module Ruboty
 
       def register_merge_request(repo, number)
         merge_request = @gitlab_client.merge_request(repo, number)
-        date = merge_request.created_at.localtime.strftime("%Y-%m-%d")
+        created_at = Time.parse(merge_request.created_at)
+        date = created_at.localtime.strftime("%Y-%m-%d")
         line = [
           date,
           merge_request.author.username,
@@ -76,12 +77,13 @@ module Ruboty
           :patch,
           merge_request.web_url
         ].join(",") + "\n"
-        update_statistics(merge_request.created_at.localtime, line)
+        update_statistics(created_at.localtime, line)
       end
 
-      def register_issue_request(repo, number)
+      def register_issue(repo, number)
         issue = @gitlab_client.issue(repo, number)
-        date = issue.created_at.localtime.strftime("%Y-%m-%d")
+        created_at = Time.parse(issue.created_at)
+        date = created_at.localtime.strftime("%Y-%m-%d")
         line = [
           date,
           issue.author.username,
@@ -89,7 +91,7 @@ module Ruboty
           :report,
           issue.web_url
         ].join(".") + "\n"
-        update_statistics(issue.created_at.localtime, line)
+        update_statistics(created_at.localtime, line)
       end
 
       # TODO refactor
