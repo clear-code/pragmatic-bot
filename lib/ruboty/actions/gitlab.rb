@@ -1,6 +1,5 @@
 require "gitlab"
 require "cgi/util"
-require "ruboty/handlers/gitlab-env"
 require "ruboty/handlers/github-env"
 
 module Ruboty
