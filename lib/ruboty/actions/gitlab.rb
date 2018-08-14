@@ -13,7 +13,7 @@ module Ruboty
       include Ruboty::Handlers::GithubEnv
 
       ENDPOINTS = {
-        gitlab: "https://gtilab.com/api/v4",
+        gitlab: "https://gitlab.com/api/v4",
         gnome: "https://gitlab.gnome.org/api/v4"
       }
 
