@@ -17,14 +17,6 @@ module Ruboty
         gnome: "https://gitlab.gnome.org/api/v4"
       }
 
-      attr_reader :access_token, :statistics_repository, :statistics_directory
-
-      def initialize(message, statistics_repository, statistics_directory)
-        super(message)
-        @statistics_repository = statistics_repository
-        @statistics_directory = statistics_directory
-      end
-
       def call
         begin
           if %r{\Ahttps://gitlab\.com/(?<repo>.+?/.+?)/(?<type>(?:issues|merge_requests))/(?<number>\d+)\z} =~ message[:url]

@@ -5,8 +5,6 @@ module Ruboty
   module Handlers
     module Feedback
       class Gitlab < Base
-        include Ruboty::Handlers::GithubEnv
-
         on(%r{(?<url>https://gitlab\.com/.+?/.+?/merge_requests/\d+)\z},
            name: :pull_request,
            description: "Register feedback to the project on GitHub.com")
@@ -42,9 +40,7 @@ module Ruboty
         private
 
         def build_action(message)
-          Ruboty::Actions::Gitlab.new(message,
-                                      statistics_repository,
-                                      statistics_directory)
+          Ruboty::Actions::Gitlab.new(message)
         end
       end
     end
