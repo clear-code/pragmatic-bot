@@ -1,5 +1,6 @@
 source "https://rubygems.org"
 
+gem "gitlab"
 gem "octokit"
 gem "ruboty"
 gem "ruboty-zulip"
